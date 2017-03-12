@@ -21,13 +21,19 @@ $app->post(
         $base = realpath(base_path().'/..');
         $branch = @$request->json()->get('repository')['default_branch'];
         foreach (explode(',', $projects) as $project) {
-            $path = $base.'/'.$project;
-            chdir($path);
-            $res = shell_exec('git pull 2>&1');
-            $response[] = [
-                "name" => $project,
-                "response" => $res,
-            ];
+            try {
+                $path = $base.'/'.$project;
+                chdir($path);
+                $res = shell_exec('git pull 2>&1');
+                $log = shell_exec('git log -1 2>&1');
+                $response[] = [
+                    "name" => $project,
+                    "response" => $res,
+                    "log" => explode("\n", $log),
+                ];
+            } catch(Exception $ee) {
+
+            }
         }
         return $response;
     }
