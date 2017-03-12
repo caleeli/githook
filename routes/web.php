@@ -19,10 +19,13 @@ $app->post(
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         $response = [];
         $base = realpath(base_path().'/..');
-        $branch = @$request->json()->get('repository')['default_branch'];
+        //$branch = @$request->json()->get('repository')['default_branch'];
         foreach (explode(',', $projects) as $project) {
             try {
                 $path = $base.'/'.$project;
+                if(!file_exists($path)) {
+                    continue;
+                }
                 chdir($path);
                 $res = shell_exec('git pull 2>&1');
                 $log = shell_exec('git log -1 2>&1');
@@ -31,8 +34,11 @@ $app->post(
                     "response" => $res,
                     "log" => explode("\n", $log),
                 ];
-            } catch(Exception $ee) {
-
+            } catch (Exception $exception) {
+                $response[] = [
+                    "name" => $project,
+                    "error" => $exception,
+                ];
             }
         }
         return $response;
