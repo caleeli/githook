@@ -16,6 +16,9 @@ $app->get('/', function () use ($app) {
 });
 
 $app->post('/deploy/{project}', function ($project, \Illuminate\Http\Request $request) use ($app) {
-    dd($request->json());
+    dd([
+        realpath(base_path().'/..'),
+        $request->json()->repository->default_branch
+    ]);
     return $project;
 });
