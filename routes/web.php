@@ -23,7 +23,7 @@ $app->post(
         foreach (explode(',', $projects) as $project) {
             $path = $base.'/'.$project;
             chdir($path);
-            $res = shell_exec('git pull');
+            $res = shell_exec('git pull 2>&1');
             $response[] = [
                 "name" => $project,
                 "response" => $res,
