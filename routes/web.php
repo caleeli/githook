@@ -15,7 +15,7 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
-$app->get('/deploy/{project}', function ($project, \Illuminate\Http\Request $request) use ($app) {
+$app->post('/deploy/{project}', function ($project, \Illuminate\Http\Request $request) use ($app) {
     dd($request->json());
     return $project;
 });
