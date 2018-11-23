@@ -18,11 +18,10 @@ $app->post(
     '/deploy/{projects}',
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         if (!getenv('HOME')) {
-            putenv('HOME', base_path('home'));
+            putenv('HOME=' . base_path('home'));
         }
         $response = [];
         $base = realpath(base_path().'/..');
-        //$branch = @$request->json()->get('repository')['default_branch'];
         foreach (explode(',', $projects) as $project) {
             try {
                 $path = $base.'/'.$project;
