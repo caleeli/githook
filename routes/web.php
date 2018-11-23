@@ -20,6 +20,11 @@ $app->post(
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
         }
+        //Load nvm
+        if (!getenv('NVM_DIR')) {
+            putenv('NVM_DIR=' . base_path('home/.nvm'));
+            exec('[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"');
+        }
         $response = [];
         $base = realpath(base_path().'/..');
         foreach (explode(',', $projects) as $project) {
