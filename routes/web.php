@@ -70,7 +70,6 @@ function run($command, $parallel = false, $followTime = 600000)
     $filename = base_path('public/log/' . uniqid() . '.txt');
     $filenameRun = tempnam('/tmp', 'run');
     $filenameDone = tempnam('/tmp', 'done');
-    unlink($filename);
     file_exists($filenameDone) ? unlink($filenameDone) : null;
     file_put_contents($filenameRun,
         "#!/bin/bash\n$command\necho 'done' > $filenameDone");
