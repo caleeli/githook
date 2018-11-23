@@ -73,7 +73,8 @@ function run($command)
     echo "$command\n";
     $filename = base_path('public/log/' . uniqid() . '.txt');
     $filenameRun = tempnam('/tmp', 'run');
-    file_put_contents($filenameRun, "#!/bin/bash\n$command");
+    $nvmLoader = '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"';
+    file_put_contents($filenameRun, "#!/bin/bash\n$nvmLoader\n$command");
     chmod($filenameRun, 0777);
     exec("$filenameRun > $filename 2>&1 &");
     echo url('/log/' . basename($filename)), "\n";
