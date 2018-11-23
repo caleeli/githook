@@ -64,7 +64,7 @@ $app->post(
  * @param boolean $parallel
  * @param int $followTime microseconds
  */
-function run($command, $parallel = false, $followTime = 400000)
+function run($command, $parallel = false, $followTime = 600000)
 {
     echo "$command\n";
     $filename = tempnam('/tmp', 'run');
@@ -78,7 +78,7 @@ function run($command, $parallel = false, $followTime = 400000)
     $t = microtime(true) + $followTime / 1000000;
     exec("$filenameRun > $filename 2>&1 & ");
     while (microtime(true) < $t) {
-        usleep($parallel ? $followTime : 2000);
+        usleep($parallel ? $followTime : 20000);
         clearstatcache();
         if ($parallel || file_exists($filenameDone)) {
             break;
