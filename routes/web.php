@@ -17,6 +17,9 @@ $app->get('/', function () use ($app) {
 $app->post(
     '/deploy/{projects}',
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
+        if (!getenv('HOME')) {
+            putenv('HOME', base_path('home'));
+        }
         $response = [];
         $base = realpath(base_path().'/..');
         //$branch = @$request->json()->get('repository')['default_branch'];
