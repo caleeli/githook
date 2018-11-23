@@ -67,7 +67,7 @@ $app->post(
 function run($command, $parallel = false, $followTime = 600000)
 {
     echo "$command\n";
-    $filename = public_path('log/' . uniqid() . '.txt');
+    $filename = base_path('public/log/' . uniqid() . '.txt');
     $filenameRun = tempnam('/tmp', 'run');
     $filenameDone = tempnam('/tmp', 'done');
     unlink($filename);
