@@ -31,6 +31,7 @@ $app->post(
                 $log = shell_exec('git log -1 2>&1');
                 foreach (glob('.githooks/post-pull*') as $filename) {
                     if (is_executable($filename)) {
+                        $log .= '> ' . $filename . "\n";
                         $log .= shell_exec($filename . ' 2>&1');
                     }
                 }
