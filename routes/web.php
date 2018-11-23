@@ -61,15 +61,32 @@ $app->post(
  * Run a shell command
  * 
  * @param string $command
- * @param int $followTime
+ * @param boolean $parallel
+ * @param int $followTime microseconds
  */
-function run($command, $followTime = 1000)
+function run($command, $parallel = false, $followTime = 400000)
 {
     echo "$command\n";
     $filename = tempnam('/tmp', 'run');
-    exec("$command >> $filename 2>&1 &");
-    usleep($followTime);
+    $filenameRun = $filename . '.run';
+    $filenameDone = $filename . '.done';
+    unlink($filename);
+    file_exists($filenameDone) ? unlink($filenameDone) : null;
+    file_put_contents($filenameRun,
+        "#!/bin/bash\n$command\necho 'done' > $filenameDone");
+    chmod($filenameRun, 0777);
+    $t = microtime(true) + $followTime / 1000000;
+    exec("$filenameRun > $filename 2>&1 & ");
+    while (microtime(true) < $t) {
+        usleep($parallel ? $followTime : 2000);
+        clearstatcache();
+        if ($parallel || file_exists($filenameDone)) {
+            break;
+        }
+    }
     echo file_get_contents($filename);
+    file_exists($filenameRun) ? unlink($filenameRun) : null;
+    file_exists($filenameDone) ? unlink($filenameDone) : null;
 }
 
 /**
