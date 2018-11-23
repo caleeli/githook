@@ -72,7 +72,6 @@ function run($command)
     chmod($filenameRun, 0777);
     exec("$filenameRun > $filename 2>&1 &");
     echo url('/log/' . basename($filename)), "\n";
-    file_exists($filenameRun) ? unlink($filenameRun) : null;
 }
 
 /**
