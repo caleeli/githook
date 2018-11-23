@@ -67,9 +67,9 @@ $app->post(
 function run($command, $parallel = false, $followTime = 600000)
 {
     echo "$command\n";
-    $filename = tempnam('/tmp', 'run');
-    $filenameRun = $filename . '.run';
-    $filenameDone = $filename . '.done';
+    $filename = public_path('log/' . uniqid() . '.txt');
+    $filenameRun = tempnam('/tmp', 'run');
+    $filenameDone = tempnam('/tmp', 'done');
     unlink($filename);
     file_exists($filenameDone) ? unlink($filenameDone) : null;
     file_put_contents($filenameRun,
@@ -84,7 +84,7 @@ function run($command, $parallel = false, $followTime = 600000)
             break;
         }
     }
-    echo file_get_contents($filename);
+    echo url('/log/' . basename($filename));
     file_exists($filenameRun) ? unlink($filenameRun) : null;
     file_exists($filenameDone) ? unlink($filenameDone) : null;
 }
