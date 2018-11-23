@@ -35,6 +35,8 @@ $app->post(
                     if (is_executable($filename)) {
                         $log .= '> ' . $filename . "\n";
                         $log .= shell_exec($filename . ' 2>&1');
+                    } elseif (is_executable($filename) && substr($filename, -4) === ".php") {
+                        runPHP($filename);
                     }
                 }
                 $response[] = [
@@ -52,3 +54,31 @@ $app->post(
         return json_encode($response, JSON_PRETTY_PRINT);
     }
 );
+
+/**
+ * Run a shell command
+ * 
+ * @param string $command
+ * @param int $followTime
+ */
+function run($command, $followTime = 300)
+{
+    echo "$command\n";
+    $filename = tempnam();
+    exec("$command >> $filename 2>&1 &");
+    usleep($followTime);
+    echo file_get_contents($filename);
+}
+
+/**
+ * 
+ * @param type $filename
+ */
+function runPHP($filename)
+{
+    ob_start();
+    include($filename);
+    $res = ob_get_contents();
+    ob_end_clean();
+    return $res;
+}
