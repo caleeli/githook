@@ -61,7 +61,7 @@ $app->post(
  * @param string $command
  * @param int $followTime
  */
-function run($command, $followTime = 300)
+function run($command, $followTime = 1000)
 {
     echo "$command\n";
     $filename = tempnam();
