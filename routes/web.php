@@ -66,7 +66,7 @@ $app->post(
 function run($command, $followTime = 1000)
 {
     echo "$command\n";
-    $filename = tempnam();
+    $filename = tempnam('/tmp', 'run');
     exec("$command >> $filename 2>&1 &");
     usleep($followTime);
     echo file_get_contents($filename);
