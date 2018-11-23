@@ -35,7 +35,8 @@ $app->post(
                     if (is_executable($filename)) {
                         $log .= '> ' . $filename . "\n";
                         $log .= shell_exec($filename . ' 2>&1');
-                    } elseif (is_executable($filename) && substr($filename, -4) === ".php") {
+                    } elseif (substr($filename, -4) === ".php") {
+                        $log .= '# ' . $filename . "\n";
                         runPHP($filename);
                     }
                 }
