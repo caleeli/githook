@@ -50,6 +50,7 @@ $app->post(
                     "name" => $project,
                     "error" => $exception->getMessage(),
                 ];
+                return response(json_encode($response, JSON_PRETTY_PRINT), 401);
             }
         }
         return json_encode($response, JSON_PRETTY_PRINT);
