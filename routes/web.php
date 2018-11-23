@@ -48,7 +48,7 @@ $app->post(
             } catch (Exception $exception) {
                 $response[] = [
                     "name" => $project,
-                    "error" => $exception,
+                    "error" => $exception->getMessage(),
                 ];
             }
         }
