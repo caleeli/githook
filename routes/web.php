@@ -29,6 +29,11 @@ $app->post(
                 chdir($path);
                 $res = shell_exec('git pull 2>&1');
                 $log = shell_exec('git log -1 2>&1');
+                foreach (glob('.githooks/post-pull*') as $filename) {
+                    if (is_executable($filename)) {
+                        $log .= shell_exec($filename . ' 2>&1');
+                    }
+                }
                 $response[] = [
                     "name" => $project,
                     "response" => $res,
