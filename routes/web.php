@@ -37,7 +37,7 @@ $app->post(
                         $log .= shell_exec($filename . ' 2>&1');
                     } elseif (substr($filename, -4) === ".php") {
                         $log .= '# ' . $filename . "\n";
-                        runPHP($filename);
+                        $log .= runPHP($filename);
                     }
                 }
                 $response[] = [
@@ -96,7 +96,7 @@ function run($command, $parallel = false, $followTime = 400000)
 function runPHP($filename)
 {
     ob_start();
-    include($filename);
+    require ($filename);
     $res = ob_get_contents();
     ob_end_clean();
     return $res;
