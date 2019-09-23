@@ -26,12 +26,12 @@ $app->post(
             exec('[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"');
         }
         $response = [];
-        $response[]=["HOME" => getenv('HOME'),"NVM_DIR" => getenv('NVM_DIR')];
-        $base = realpath(base_path().'/..');
+        $response[] = ['HOME' => getenv('HOME'), 'NVM_DIR' => getenv('NVM_DIR')];
+        $base = realpath(base_path() . '/..');
         foreach (explode(',', $projects) as $project) {
             try {
-                $path = $base.'/'.$project;
-                if(!file_exists($path)) {
+                $path = $base . '/' . $project;
+                if (!file_exists($path)) {
                     continue;
                 }
                 chdir($path);
@@ -41,31 +41,31 @@ $app->post(
                     if (is_executable($filename)) {
                         $log .= '> ' . $filename . "\n";
                         $log .= shell_exec($filename . ' 2>&1');
-                    } elseif (substr($filename, -4) === ".php") {
+                    } elseif (substr($filename, -4) === '.php') {
                         $log .= '# ' . $filename . "\n";
                         $log .= runPHP($filename);
                     }
                 }
                 $response[] = [
-                    "name" => $project,
-                    "response" => $res,
-                    "log" => explode("\n", $log),
+                    'name' => $project,
+                    'response' => $res,
+                    'log' => $log,
                 ];
             } catch (Exception $exception) {
                 $response[] = [
-                    "name" => $project,
-                    "error" => $exception->getMessage(),
+                    'name' => $project,
+                    'error' => $exception->getMessage(),
                 ];
-                return response(json_encode($response, JSON_PRETTY_PRINT), 401);
+                return response(formatResponse($response, JSON_PRETTY_PRINT), 401);
             }
         }
-        return json_encode($response, JSON_PRETTY_PRINT);
+        return formatResponse($response, JSON_PRETTY_PRINT);
     }
 );
 
 /**
  * Run a shell command
- * 
+ *
  * @param string $command
  * @param int $followTime microseconds
  */
@@ -82,13 +82,13 @@ function run($command)
 }
 
 /**
- * 
+ *
  * @param type $filename
  */
 function runPHP($filename)
 {
     ob_start();
-    require ($filename);
+    require $filename;
     $res = ob_get_contents();
     ob_end_clean();
     return $res;
@@ -96,7 +96,11 @@ function runPHP($filename)
 
 function formatResponse($response)
 {
-    foreach($response as $tag) {
-        echo $tag['name'], "\n";
+    $string = '';
+    foreach ($response as $name => $content) {
+        $string .= '#' . $name . "\n";
+        $string .= is_string($content) ? $content : json_encode($content);
+        $string .= "\n";
     }
+    return $string;
 }
