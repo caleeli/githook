@@ -26,7 +26,7 @@ $app->post(
             exec('[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"');
         }
         $response = [];
-        $response[]=[ "HOME" => getenv('HOME'),"NVM_DIR" => getenv('NVM_DIR')];
+        $response[]=["HOME" => getenv('HOME'),"NVM_DIR" => getenv('NVM_DIR')];
         $base = realpath(base_path().'/..');
         foreach (explode(',', $projects) as $project) {
             try {
@@ -98,6 +98,5 @@ function formatResponse($response)
 {
     foreach($response as $tag) {
         echo $tag['name'], "\n";
-        echo 
     }
 }
