@@ -97,10 +97,12 @@ function runPHP($filename)
 function formatResponse($response)
 {
     $string = '';
-    foreach ($response as $name => $content) {
-        $string .= '#' . $name . "\n";
-        $string .= is_string($content) ? $content : json_encode($content);
-        $string .= "\n";
+    foreach ($response as $tag) {
+        foreach ($tag as $name => $content) {
+            $string .= '#' . $name . "\n";
+            $string .= is_string($content) ? $content : json_encode($content);
+            $string .= "\n";
+        }
     }
     return $string;
 }
