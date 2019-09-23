@@ -25,6 +25,8 @@ $app->post(
             putenv('NVM_DIR=' . base_path('home/.nvm'));
             exec('[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"');
         }
+        echo "HOME: ",getenv('HOME'),"\n";
+        echo "NVM_DIR: ",getenv('NVM_DIR'),"\n";
         $response = [];
         $base = realpath(base_path().'/..');
         foreach (explode(',', $projects) as $project) {
@@ -91,4 +93,12 @@ function runPHP($filename)
     $res = ob_get_contents();
     ob_end_clean();
     return $res;
+}
+
+function formatResponse($response)
+{
+    foreach($response as $tag) {
+        echo $tag['name'], "\n";
+        echo 
+    }
 }
