@@ -1,4 +1,5 @@
 <?php
+
 /*
   |--------------------------------------------------------------------------
   | Application Routes
@@ -148,4 +149,9 @@ function onchange(array $paths, $string)
 function getLastCommit()
 {
     return trim(shell_exec('git rev-parse HEAD 2>&1'));
+}
+
+function email($email, $subject, $message)
+{
+    return 'php artisan mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ';';
 }
