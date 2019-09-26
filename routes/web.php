@@ -26,7 +26,7 @@ $app->post(
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         global $lastCommit;
         global $logFile;
-        $logFile =  uniqid() . '.txt';
+        $logFile = uniqid() . '.txt';
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
         }
@@ -159,5 +159,5 @@ function email($email, $subject, $message)
 {
     global $logFile;
     $logUrl = url('/log/' . basename($logFile));
-    return 'php artisan mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
+    return 'php ' . base_path('artisan') . ' mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
 }
