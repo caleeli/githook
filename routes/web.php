@@ -26,6 +26,7 @@ $app->post(
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         global $lastCommit;
         global $logFile;
+        $lastCommit = $request->input('before');
         $logFile = uniqid() . '.txt';
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
@@ -45,7 +46,6 @@ $app->post(
                     continue;
                 }
                 chdir($path);
-                $lastCommit = getLastCommit();
                 $res = shell_exec('git pull 2>&1');
                 $log = shell_exec('git log -1 2>&1');
                 foreach (glob('.githooks/post-pull*') as $filename) {
@@ -159,5 +159,5 @@ function email($email, $subject, $message)
 {
     global $logFile;
     $logUrl = url('/log/' . basename($logFile));
-    return 'php ' . base_path('artisan') . ' mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
+    return 'php ' . __DIR__ . '/../artisan' . ' mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
 }
