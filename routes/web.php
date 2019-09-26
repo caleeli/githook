@@ -15,6 +15,7 @@ global $changed;
 $changed = null;
 global $lastCommit;
 $lastCommit = 'HEAD@{1}';
+global $logFile;
 
 $app->get('/', function () use ($app) {
     return $app->version();
@@ -24,6 +25,8 @@ $app->post(
     '/deploy/{projects}',
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         global $lastCommit;
+        global $logFile;
+        $logFile =  uniqid() . '.txt';
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
         }
@@ -79,8 +82,9 @@ $app->post(
  */
 function run($command)
 {
+    global $logFile;
     echo "$command\n";
-    $filename = base_path('public/log/' . uniqid() . '.txt');
+    $filename = base_path('public/log/' . $logFile);
     $filenameRun = tempnam('/tmp', 'run');
     $nvmLoader = '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"';
     file_put_contents($filenameRun, "#!/bin/bash\n$nvmLoader\n$command");
@@ -153,5 +157,7 @@ function getLastCommit()
 
 function email($email, $subject, $message)
 {
-    return 'php artisan mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ';';
+    global $logFile;
+    $logUrl = url('/log/' . basename($logFile));
+    return 'php artisan mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
 }
