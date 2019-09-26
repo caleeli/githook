@@ -18,7 +18,7 @@ class MailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mail {email : Email address} {message : Message to be sent}';
+    protected $signature = 'mail {email : Email address} {subject : Email subject} {message : Message to be sent}';
 
     /**
      * The console command description.
