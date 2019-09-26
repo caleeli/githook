@@ -10,6 +10,11 @@
   |
  */
 
+global $changed;
+$changed = null;
+global $lastCommit;
+$lastCommit = 'HEAD@{1}';
+
 $app->get('/', function () use ($app) {
     return $app->version();
 });
@@ -17,6 +22,7 @@ $app->get('/', function () use ($app) {
 $app->post(
     '/deploy/{projects}',
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
+        global $lastCommit;
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
         }
@@ -35,6 +41,7 @@ $app->post(
                     continue;
                 }
                 chdir($path);
+                $lastCommit = getLastCommit();
                 $res = shell_exec('git pull 2>&1');
                 $log = shell_exec('git log -1 2>&1');
                 foreach (glob('.githooks/post-pull*') as $filename) {
@@ -105,4 +112,40 @@ function formatResponse($response)
         }
     }
     return $string;
+}
+
+function changed($lastCommit)
+{
+    return explode("\n", trim(shell_exec('git diff --name-only HEAD@{0} ' . $lastCommit . ' 2>&1')));
+}
+
+/**
+ * Return the string if a file inside array $paths have changed
+ *
+ * @param array $paths
+ * @param string $string
+ *
+ * @return string
+ */
+function onchange(array $paths, $string)
+{
+    global $lastCommit;
+    global $changed;
+    if (!isset($changed)) {
+        $changed = changed($lastCommit);
+    }
+    foreach ($paths as $path) {
+        $length = strlen($path);
+        foreach ($changed as $filename) {
+            if (substr($filename, 0, $length) === $path) {
+                return $string;
+            }
+        }
+    }
+    return '';
+}
+
+function getLastCommit()
+{
+    return trim(shell_exec('git rev-parse HEAD 2>&1'));
 }
