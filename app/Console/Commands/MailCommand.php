@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Console\Command;
 
 /**
@@ -18,7 +18,7 @@ class MailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mail {email : Email address} {subject : Email subject} {message : Message to be sent}';
+    protected $signature = 'mail {email : Email address} {subject : Email subject} {body : Message body to be sent}';
 
     /**
      * The console command description.
@@ -36,8 +36,8 @@ class MailCommand extends Command
     {
         $email = $this->argument('email');
         $subject = $this->argument('subject');
-        $message = $this->argument('message');
-        $data = ['email' => $email, 'message' => $message];
+        $body = $this->argument('body');
+        $data = ['email' => $email, 'body' => $body];
         Mail::send('mail', $data, function ($mail) use ($email, $subject) {
             $mail->to($email)
             ->subject($subject);
