@@ -26,9 +26,8 @@ $app->post(
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         global $lastCommit;
         global $logFile;
-        $payload = json_decode($request->input('payload'));
-        var_dump($request->all());die;
-        $lastCommit = $payload->before;
+        $payload = $request->input('payload') ? json_decode($request->input('payload'), true) : $request->all();
+        $lastCommit = $payload['before'];
         $logFile = uniqid() . '.txt';
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
