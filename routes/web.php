@@ -27,7 +27,7 @@ $app->post(
         global $lastCommit;
         global $logFile;
         $payload = $request->input('payload') ? json_decode($request->input('payload'), true) : $request->all();
-        $lastCommit = $payload['before'];
+        $lastCommit = $payload['before'] ?? null;
         $logFile = uniqid() . '.txt';
         if (!getenv('HOME')) {
             putenv('HOME=' . base_path('home'));
