@@ -26,6 +26,8 @@ $app->post(
     function ($projects, \Illuminate\Http\Request $request) use ($app) {
         global $lastCommit;
         global $logFile;
+        global $changed;
+        $changed = null;
         $payload = $request->input('payload') ? json_decode($request->input('payload'), true) : $request->all();
         $lastCommit = $payload['before'] ?? null;
         $logFile = uniqid() . '.txt';
