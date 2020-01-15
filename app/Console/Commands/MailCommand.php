@@ -18,7 +18,7 @@ class MailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mail {email : Email address} {subject : Email subject} {body : Message body to be sent} {logUrl? : Optional log url}';
+    protected $signature = 'mail {email : Email address} {subject : Email subject} {body : Message body to be sent} {logUrl? : Optional log url} {from?}';
 
     /**
      * The console command description.
@@ -38,10 +38,17 @@ class MailCommand extends Command
         $subject = $this->argument('subject');
         $body = $this->argument('body');
         $logUrl = $this->argument('logUrl');
+        $from = $this->argument('from');
         $data = ['email' => $email, 'body' => $body, 'logUrl' => $logUrl];
-        Mail::send('mail', $data, function ($mail) use ($email, $subject) {
-            $mail->to($email)
-            ->subject($subject);
+        Mail::send('mail', $data, function ($mail) use ($email, $subject, $from) {
+            if ($from) {
+                $mail->from($from)
+                ->to($email)
+                ->subject($subject);
+            } else {
+                $mail->to($email)
+                ->subject($subject);
+            }
         });
     }
 }
