@@ -16,6 +16,9 @@ $changed = null;
 global $lastCommit;
 $lastCommit = 'HEAD@{1}';
 global $logFile;
+global $nodeVersion;
+
+$nodeVersion = '';
 
 $app->get('/', function () use ($app) {
     return $app->version();
@@ -86,11 +89,17 @@ $app->post(
 function run($command)
 {
     global $logFile;
+    global $nodeVersion;
     echo "$command\n";
     $filename = base_path('public/log/' . $logFile);
     $filenameRun = tempnam('/tmp', 'run');
     $nvmLoader = '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"';
-    file_put_contents($filenameRun, "#!/bin/bash\n$nvmLoader\n$command");
+    if ($nodeVersion) {
+        $setVersion = 'nvm install ' . $nodeVersion . ';nvm use ' . $nodeVersion;
+    } else {
+        $setVersion = '';
+    }
+    file_put_contents($filenameRun, "#!/bin/bash\n$nvmLoader\n{$setVersion}\n$command");
     chmod($filenameRun, 0777);
     exec("$filenameRun > $filename 2>&1 &");
     echo url('/log/' . basename($filename)), "\n";
@@ -167,4 +176,10 @@ function email($email, $subject, $message)
     global $logFile;
     $logUrl = url('/log/' . basename($logFile));
     return 'php ' . __DIR__ . '/../artisan' . ' mail ' . escapeshellarg($email) . ' ' . escapeshellarg($subject) . ' ' . escapeshellarg($message) . ' ' . escapeshellarg($logUrl) . ';';
+}
+
+function node_version($version)
+{
+    global $nodeVersion;
+    $nodeVersion = $version;
 }
