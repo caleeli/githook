@@ -128,7 +128,7 @@ function formatResponse($response)
 
 function changed($lastCommit)
 {
-    return explode("\n", trim(shell_exec('git diff --name-only HEAD@{0} ' . $lastCommit . ' 2>&1')));
+    return explode("\n", trim(shell_exec('git diff --name-only HEAD@{0} ' . $lastCommit . '~1 2>&1')));
 }
 
 /**
