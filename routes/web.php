@@ -103,7 +103,11 @@ function run($command)
 function runPHP($filename)
 {
     ob_start();
-    require $filename;
+    try {
+        require $filename;
+    } catch (Throwable $exception) {
+        echo $exception->getMessage();
+    }
     $res = ob_get_contents();
     ob_end_clean();
     return $res;
