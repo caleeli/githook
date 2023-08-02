@@ -106,6 +106,26 @@ function run($command)
 }
 
 /**
+ * Run a shell command inside a docker container
+ *
+ * @param string $command
+ * @param int $followTime microseconds
+ */
+function runDocker($imageName, $command)
+{
+    global $logFile;
+    echo "$command\n";
+    $filename = base_path('public/log/' . $logFile);
+    $dockerRun = base_path('bin/docker_run.sh');
+    $filenameRun = tempnam('/tmp', 'run');
+    file_put_contents($filenameRun, "#!/bin/bash\n$command");
+    chmod($filenameRun, 0777);
+    $imageName = escapeshellarg($imageName);
+    exec("$dockerRun $imageName $filenameRun > $filename 2>&1 &");
+    echo url('/log/' . basename($filename)), "\n";
+}
+
+/**
  *
  * @param type $filename
  */
