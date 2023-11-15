@@ -19,6 +19,7 @@ global $logFile;
 global $nodeVersion;
 
 $nodeVersion = '';
+error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
 $app->get('/', function () use ($app) {
     return $app->version();
